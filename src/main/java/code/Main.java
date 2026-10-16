@@ -64,7 +64,7 @@ public class Main {
                     // ko dc nhap bien so xe rong
                     if (bienSo.isEmpty()) {
                         JOptionPane.showMessageDialog(
-                                frame, "Bien so khong duoc de trong!"
+                                frame, "Bien so xe khong duoc de trong!"
                         );
                         return;
                     }
