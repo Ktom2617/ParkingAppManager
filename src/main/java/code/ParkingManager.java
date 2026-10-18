@@ -1,6 +1,7 @@
 package code;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.time.LocalDate;
 public class ParkingManager {
     private ArrayList<ParkingTicket>danhSachVe=new ArrayList<>();
     public ParkingTicket checkIn(ParkingSlot slot,Vehicle xe){
@@ -30,5 +31,24 @@ public class ParkingManager {
     }
     public int getSoLuotGui() {
         return danhSachVe.size();
+    }
+    public int getSoXeDangGui(){
+        int dem=0;
+        for(ParkingTicket ve : danhSachVe){
+            if (ve.isActive()){
+                dem++;
+            }
+        }
+        return dem;
+    }
+    public long getDoanhThuHomNay() {
+        long tongTien = 0;
+        LocalDate homNay = LocalDate.now();
+        for (ParkingTicket ve : danhSachVe) {
+            if (!ve.isActive() && ve.getGioRa().toLocalDate().equals(homNay)) {//kiểm tra xe được trả trong hôm nay.
+                tongTien += ve.getPhiGui();
+            }
+        }
+        return tongTien;
     }
 }
