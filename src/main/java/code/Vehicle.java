@@ -14,7 +14,7 @@ public abstract class Vehicle {
     public abstract int getGiaBanDem();
     public long tinhPhi(LocalDateTime gioVao, LocalDateTime gioRa){//tính phí đỗ xe, xem xe vào/ra ngày hay đêm
         if (gioVao==null||gioRa==null|| gioRa.isBefore(gioVao)){
-            throw new IllegalArgumentException("Thoi gian khong hop le");
+            throw new IllegalArgumentException("Thời gian không hợp lệ");
         }
         LocalDate ngay = gioVao.toLocalDate().minusDays(1);//lùi lại 1 ngày để lấy cả khoảng đêm trc đó
         while(!ngay.isAfter(gioRa.toLocalDate())){//trong khi ngày chưa vượt quá ngày xe ra

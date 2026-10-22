@@ -6,10 +6,10 @@ public class ParkingManager {
     private ArrayList<ParkingTicket>danhSachVe=new ArrayList<>();
     public ParkingTicket checkIn(ParkingSlot slot,Vehicle xe){
         if(!slot.isEmpty()){
-            throw new IllegalStateException("Vi tri da co xe!");
+            throw new IllegalStateException("Vị trí đã có xe!");
         }
         if (xe==null){
-            throw new IllegalArgumentException("Xe khong hop le!");
+            throw new IllegalArgumentException("Xe không hợp lệ!");
         }
         slot.parkVehicle(xe);
         ParkingTicket ve = new ParkingTicket(xe, slot.getId(), slot.getThoiGianVao());
@@ -27,7 +27,7 @@ public class ParkingManager {
                 return ve;
             }
         }
-        throw new IllegalStateException("Khong tim thay ve dang gui");
+        throw new IllegalStateException("Không tìm thấy vé đang gửi!");
     }
     public int getSoLuotGui() {
         return danhSachVe.size();

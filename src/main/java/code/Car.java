@@ -6,7 +6,7 @@ public class Car extends Vehicle{
     }
     @Override
     public String getLoaiXe() {
-        return "O to";
+        return "Ô tô";
     }
 
     @Override

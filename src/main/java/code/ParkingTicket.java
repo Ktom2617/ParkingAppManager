@@ -21,10 +21,10 @@ public class ParkingTicket {
     }
     public void checkout(LocalDateTime gioRa){//cho xe ra
         if(!isActive()){
-            throw new IllegalStateException("Ve da duoc checkout");
+            throw new IllegalStateException("Vé đã được checkout");
         }
         if(gioRa==null||gioRa.isBefore(gioVao)){
-            throw new IllegalArgumentException("Gio ra khong hop le");
+            throw new IllegalArgumentException("Giờ ra không hợp lệ");
         }
         this.phiGui=vehicle.tinhPhi(gioVao,gioRa);
         this.gioRa=gioRa;

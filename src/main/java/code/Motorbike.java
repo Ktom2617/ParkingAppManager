@@ -7,7 +7,7 @@ public class Motorbike extends Vehicle{
 
     @Override
     public String getLoaiXe() {
-        return "Xe may";
+        return "Xe máy";
     }
 
     @Override

@@ -1,4 +1,3 @@
-
 package code;
 
 import javax.swing.*;
@@ -12,7 +11,7 @@ public class ParkingFrame {
     public static void createWindow() {
         Color MAU_TRONG = new Color(33, 40, 45);//màu của slot khi empty
         Color MAU_CO_XE = new Color(72, 68, 45);//màu của slot khi có xe
-        JFrame frame = new JFrame("Smart Parking System - Group 6");//tạo frame cửa số
+        JFrame frame = new JFrame("Parking Manager System - Group 6");//tạo frame cửa số
         frame.setSize(900, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -45,7 +44,7 @@ public class ParkingFrame {
         JLabel soDangCo = new JLabel("0");//phục vụ cho hiển thị số liệu thống kê ở giao diện chính
         JLabel soConTrong = new JLabel("12");//phục vụ cho hiển thị số liệu thống kê ở giao diện chính
         JLabel soDoanhThu = new JLabel("0đ");//phuc vu hien thi doanh thu
-        JLabel thongTinViTri = new JLabel("Chon mot o de xem chi tiet");//phuc vu hien thi doanh thu
+        JLabel thongTinViTri = new JLabel("Chọn một ô để xem chi tiết");//phuc vu hien thi doanh thu
         JLabel maViTri = new JLabel("--");//phuc vu hien thi ma vi tri
         JLabel trangThai = new JLabel("CHƯA CHỌN");//phuc vu hien thi trang thai
         maViTri.setFont(new Font("SansSerif", Font.BOLD, 34));
@@ -63,12 +62,16 @@ public class ParkingFrame {
         phiHienThi.setFont(new Font("SansSerif", Font.BOLD, 30));
         phiHienThi.setForeground(new Color(242, 183, 5));
         phiHienThi.setVisible(false);
+        JLabel loaiXeHienThi = new JLabel("--");
+        JLabel gioVaoHienThi = new JLabel("--");
+        loaiXeHienThi.setForeground(Color.WHITE);
+        gioVaoHienThi.setForeground(Color.WHITE);
         JButton nutTraXe = new JButton("TRẢ XE");//nút trả xe
         JButton nutNhanXe = new JButton("NHẬN XE");//nút nhận xe
 //tạo ô nhâp liệu
         JTextField nhapBienSo = new JTextField();
         JComboBox<String> chonLoaiXe = new JComboBox<>(
-                new String[]{"Xe may", "O to"}
+                new String[]{"Xe máy", "Ô tô"}
         );
         //làm đẹp
         nhapBienSo.setPreferredSize(new Dimension(190, 44));
@@ -114,7 +117,9 @@ public class ParkingFrame {
         chonLoaiXe.putClientProperty("FlatLaf.style", "arc: 12");
 
         formNhanXe.setVisible(false);
-//lặp tạo button
+
+        SlotDetailPanel hangTieuDe = new SlotDetailPanel(maViTri, trangThai);
+        //lặp tạo button
         for (int i = 1; i <= 12; i++) {//mỗi lần lặp tạo 1 nút mới JButton
             String id = "A" + i;
             ParkingSlot parkingSlot = new ParkingSlot(id);
@@ -129,7 +134,7 @@ public class ParkingFrame {
             slot.setOpaque(true);
 
             if (parkingSlot.isEmpty()) {
-                slot.setText("<html><font color='white'>"+id + " - TRONG");//nếu slot empty thì cho trống;
+                slot.setText("<html><font color='white'>"+id + " - TRỐNG");//nếu slot empty thì cho trống;
                 slot.setBackground(MAU_TRONG);
             } else {
                 //làm đẹp time
@@ -153,12 +158,18 @@ public class ParkingFrame {
                         vienGoc,
                         BorderFactory.createLineBorder(new Color(242, 183, 5), 3)
                 ));
-                hienThiChiTiet(parkingSlot, thongTinViTri, maViTri, trangThai,bienSoHienThi,phiHienThi);//hien thi vi tri
+
                 nutDangChon = slot;  //Ghi nhớ ô mới là nutDangChon
                 viTriDangChon = parkingSlot;//Ghi nhớ vị chon
                 nutTraXe.setEnabled(!parkingSlot.isEmpty());//chọn ô có xe thì nút trả xe được bật. Chọn ô trống thì nút bị khóa
                 nutNhanXe.setEnabled(parkingSlot.isEmpty());//choọn ô trống thì bật nút này lên
                 formNhanXe.setVisible(parkingSlot.isEmpty());//chỉ hiện form khi ô trống
+                hienThiChiTiet(
+                        viTriDangChon, thongTinViTri,
+                        hangTieuDe,
+                        bienSoHienThi, phiHienThi,
+                        loaiXeHienThi, gioVaoHienThi
+                );//hien thi vi tri
             });
 
 
@@ -177,12 +188,6 @@ public class ParkingFrame {
                     3, 3, vienDuoi, 3,//tren duoi trai phai
                     new Color(235, 235, 225)
             ));
-            int viTriTrongCot = (soO - 1) % 4;
-
-            int tren = 3;
-            int trai = 3;
-            int phai = 3;
-            int duoi = (viTriTrongCot == 3) ? 3 : 0;
 
 
         }
@@ -199,9 +204,9 @@ public class ParkingFrame {
         header.add(logo, BorderLayout.WEST);
 
         JPanel stats = new JPanel(new GridLayout(1, 4, 12, 0));//tạo giao dien thẻ thống kê/thông tin
-        stats.add(createStatCard("SUC CHUA", new JLabel("12")));
-        stats.add(createStatCard("DANG CO XE", soDangCo));
-        stats.add(createStatCard("CON TRONG", soConTrong));
+        stats.add(createStatCard("SỨC CHỨA", new JLabel("12")));
+        stats.add(createStatCard("ĐANG CÓ XE", soDangCo));
+        stats.add(createStatCard("CÒN TRỐNG", soConTrong));
         stats.add(createStatCard("DOANH THU", soDoanhThu));
         capNhatThongKe(quanLy, soDangCo, soConTrong, soDoanhThu);
 
@@ -220,22 +225,6 @@ public class ParkingFrame {
 
         //panel
 
-        JPanel hangTieuDe = new JPanel(new BorderLayout());//mã vị trí bên trái, trạng thái bên phải
-        hangTieuDe.setOpaque(false);
-        hangTieuDe.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(
-                        0, 0, 1, 0, new Color(50, 58, 63)
-                ),
-                BorderFactory.createEmptyBorder(0, 0, 14, 0)
-        ));
-
-        hangTieuDe.add(maViTri, BorderLayout.WEST);
-        hangTieuDe.add(trangThai, BorderLayout.EAST);
-
-        JPanel dauPhieu = new JPanel(new BorderLayout(0, 15));//chứa hàng tiêu đề và phần thông tin cũ ngay phía dưới
-        dauPhieu.setOpaque(false);
-
-        dauPhieu.add(hangTieuDe, BorderLayout.NORTH);
         JPanel hangBienSo = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));//xử lý hiện biển số đẹp
         hangBienSo.setOpaque(false);
         hangBienSo.add(bienSoHienThi);
@@ -246,11 +235,26 @@ public class ParkingFrame {
                 BorderFactory.createEmptyBorder(8, 0, 12, 0)
         );
         noiDungPhieu.add(hangBienSo, BorderLayout.NORTH);
-        noiDungPhieu.add(thongTinViTri, BorderLayout.CENTER);
-//noiDungPhieu gồm ba phần:
-//- NORTH: biển số xe.
-//- CENTER: loại xe, giờ vào.
-//- SOUTH: phí gửi xe.
+        JPanel bangThongTin = new JPanel(new GridLayout(2, 2, 10, 12));//giao diện bảng thông tin
+        bangThongTin.setOpaque(false);
+        JLabel nhanLoaiXeChiTiet = new JLabel("Loại xe");
+        JLabel nhanGioVaoChiTiet = new JLabel("Giờ vào");
+        nhanLoaiXeChiTiet.setForeground(new Color(152, 162, 168));
+        nhanGioVaoChiTiet.setForeground(new Color(152, 162, 168));
+
+        bangThongTin.add(nhanLoaiXeChiTiet);
+        bangThongTin.add(loaiXeHienThi);
+        bangThongTin.add(nhanGioVaoChiTiet);
+        bangThongTin.add(gioVaoHienThi);
+
+        JPanel khuThongTin = new JPanel(new BorderLayout(0, 10));
+        khuThongTin.setOpaque(false);
+
+        khuThongTin.add(thongTinViTri, BorderLayout.NORTH);
+        khuThongTin.add(bangThongTin, BorderLayout.CENTER);
+
+        noiDungPhieu.add(khuThongTin, BorderLayout.CENTER);
+
         JPanel khuPhi = new JPanel(new BorderLayout(0, 6));
         khuPhi.setOpaque(false);
         khuPhi.setBorder(BorderFactory.createCompoundBorder(
@@ -266,13 +270,28 @@ public class ParkingFrame {
         noiDungPhieu.add(khuPhi, BorderLayout.SOUTH);
 
 
-        dauPhieu.add(noiDungPhieu, BorderLayout.CENTER);
-        details.add(dauPhieu, BorderLayout.NORTH);
+        hangTieuDe.setNoiDung(noiDungPhieu);
 
         JPanel vungNhapXe = new JPanel(new BorderLayout());
         vungNhapXe.setOpaque(false);
         vungNhapXe.add(formNhanXe, BorderLayout.NORTH);
-        details.add(vungNhapXe, BorderLayout.CENTER);
+
+        JPanel noiDungCuon = new JPanel(new BorderLayout(0, 12));//cuộn menu
+        noiDungCuon.setOpaque(false);
+        noiDungCuon.add(hangTieuDe, BorderLayout.NORTH);
+        noiDungCuon.add(vungNhapXe, BorderLayout.CENTER);//Gộp phần thông tin xe và form nhận xe thành một khối
+
+        JScrollPane thanhCuon = new JScrollPane(noiDungCuon);//Đặt khối đó bên trong một JScrollPane. Nếu nội dung vượt quá diện tích hiển thị, Swing sẽ cho phép cuộn
+        thanhCuon.setBorder(null);
+        thanhCuon.setOpaque(false);
+        thanhCuon.getViewport().setOpaque(false);
+        thanhCuon.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
+        thanhCuon.getVerticalScrollBar().setUnitIncrement(16);
+
+        details.add(thanhCuon, BorderLayout.CENTER);
+
 
         nutTraXe.setBackground(new Color(242, 183, 5));
         nutTraXe.setForeground(new Color(28, 22, 0));
@@ -286,14 +305,18 @@ public class ParkingFrame {
 
         JPanel actions = new JPanel(new GridLayout(2, 1, 0, 10));//taạo khung 2 nút
         actions.setOpaque(false);
+        actions.setBorder(
+                BorderFactory.createEmptyBorder(16, 0, 0, 0)
+        );
 
         nutNhanXe.setEnabled(false); // Chưa gắn chức năng
         nutNhanXe.putClientProperty("JButton.buttonType", "roundRect");
 
         actions.add(nutNhanXe);
         actions.add(nutTraXe);
-
         details.add(actions, BorderLayout.SOUTH);
+
+
 
         nutNhanXe.addActionListener(e -> {//hành động xử lý nút nhận xe
 
@@ -305,7 +328,7 @@ public class ParkingFrame {
 
             if (bienSo.isEmpty()) {
                 JOptionPane.showMessageDialog(
-                        frame, "Bien so khong duoc de trong!"
+                        frame, "Biển số không được để trống!"
                 );
                 return;
             }
@@ -316,7 +339,7 @@ public class ParkingFrame {
             // Tạo đối tượng xe
             Vehicle xe;
 
-            if (loaiXe.equals("O to")) {
+            if (loaiXe.equals("Ô tô")) {
                 xe = new Car(bienSo);
             } else {
                 xe = new Motorbike(bienSo);
@@ -328,17 +351,22 @@ public class ParkingFrame {
 
             // Cập nhật giao diện
             String gioVao = viTri.getThoiGianVao()
-                    .format(DateTimeFormatter.ofPattern("HH:mm"));
+                    .format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 
             nutDangChon.setText("<html><center><font color='white'>"
                     + viTri.getId() + " - " + xe.getBienSo()
                     + "<br>" + xe.getLoaiXe()
-                    + "<br>Gio vao: " + gioVao
+                    + "<br>Giờ vào: " + gioVao
                     + "</font></center></html>");
 
             nutDangChon.setBackground(MAU_CO_XE);
 
-            hienThiChiTiet(viTri, thongTinViTri, maViTri, trangThai,bienSoHienThi,phiHienThi);
+            hienThiChiTiet(
+                    viTriDangChon, thongTinViTri,
+                    hangTieuDe,
+                    bienSoHienThi, phiHienThi,
+                    loaiXeHienThi, gioVaoHienThi
+            );
             capNhatThongKe(quanLy, soDangCo, soConTrong, soDoanhThu);
 
             nutNhanXe.setEnabled(false);
@@ -356,14 +384,14 @@ public class ParkingFrame {
 
             Vehicle xe = viTriDangChon.getVehicle();
 
-            String thongBao = "Bien so: " + xe.getBienSo()
-                    + "\nLoai xe: " + xe.getLoaiXe()
-                    + "\nVi tri: " + viTriDangChon.getId()
-                    + "\nPhi gui: " + viTriDangChon.getPhiGui() + "đ"
-                    + "\n\nXac nhan tra xe?";
+            String thongBao = "Biển số: " + xe.getBienSo()
+                    + "\nLoại xe: " + xe.getLoaiXe()
+                    + "\nVị trí: " + viTriDangChon.getId()
+                    + "\nPhí gửi: " + viTriDangChon.getPhiGui() + "đ"
+                    + "\n\nXác nhận trả xe?";
 
             int luaChon = JOptionPane.showConfirmDialog(//tạo lua chọn confỉrm
-                    frame, thongBao, "Xac nhan tra xe",
+                    frame, thongBao, "Xác nhận trả xe",
                     JOptionPane.YES_NO_OPTION
             );
 
@@ -375,16 +403,21 @@ public class ParkingFrame {
 
             nutDangChon.setText("<html><center><font color='white'>"
                     + viTriDangChon.getId()
-                    + " - TRONG</font></center></html>");
+                    + " - TRỐNG</font></center></html>");
 
             nutDangChon.setBackground(MAU_TRONG);
-            hienThiChiTiet(viTriDangChon, thongTinViTri, maViTri, trangThai,bienSoHienThi,phiHienThi);
+            hienThiChiTiet(
+                    viTriDangChon, thongTinViTri,
+                    hangTieuDe,
+                    bienSoHienThi, phiHienThi,
+                    loaiXeHienThi, gioVaoHienThi
+            );
             capNhatThongKe(quanLy, soDangCo, soConTrong, soDoanhThu);
 
             nutTraXe.setEnabled(false);
             nutNhanXe.setEnabled(true);
             formNhanXe.setVisible(true);
-            System.out.println("Da thu: " + ve.getPhiGui() + " VND");
+            System.out.println("Đã thu: " + ve.getPhiGui() + " VND");
         });
 
 
@@ -425,41 +458,48 @@ public class ParkingFrame {
         long doanhThu = quanLy.getDoanhThuHomNay();
         soDoanhThu.setText(dinhDangTien(doanhThu));//lay doanh thu
     }
-    //ham hiển thị thong tin
+    //ham hiển thị thong tin chi tiet
 
-    private static void hienThiChiTiet(ParkingSlot viTri, JLabel thongTin,JLabel maViTri, JLabel trangThai,JLabel bienSoHienThi,JLabel phiHienThi) {
-        maViTri.setText(viTri.getId());
+    private static void hienThiChiTiet(
+            ParkingSlot viTri,
+            JLabel thongTin,
+            SlotDetailPanel hangTieuDe,
+            JLabel bienSoHienThi,
+            JLabel phiHienThi,
+            JLabel loaiXeHienThi,
+            JLabel gioVaoHienThi) {
 
-        trangThai.setText(
-                viTri.isEmpty() ? "TRỐNG" : "ĐANG CÓ XE"
-        );
+        hangTieuDe.capNhat(viTri);
+
         if (viTri.isEmpty()) {
+            thongTin.setText("Sẵn sàng nhận xe.");
+
             bienSoHienThi.setVisible(false);
             phiHienThi.setVisible(false);
-        } else {
-            bienSoHienThi.setText(viTri.getVehicle().getBienSo());
-            bienSoHienThi.setVisible(true);
-            phiHienThi.setText(dinhDangTien(viTri.getPhiGui()));
-            phiHienThi.setVisible(true);
+
+            loaiXeHienThi.setText("--");
+            gioVaoHienThi.setText("--");
+            return;
         }
-        if (viTri.isEmpty()) {
-            thongTin.setText("Vị trí sẵn sàng nhận xe.");
-        } else {
-            Vehicle xe = viTri.getVehicle();
 
-            String noiDung = "<html>"
-                    + "<font color='#98A2A8'>Loại xe:</font> "
-                    + xe.getLoaiXe() + "<br><br>"
+        Vehicle xe = viTri.getVehicle();
 
-                    + "<font color='#98A2A8'>Giờ vào:</font> "
-                    + viTri.getThoiGianVao()
-                    .format(DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy"))
-                    + "<br><br><hr>"
-                    + "</html>";
+        thongTin.setText("");
 
-            thongTin.setText(noiDung);
-        }
+        bienSoHienThi.setText(xe.getBienSo());
+        bienSoHienThi.setVisible(true);
+
+        loaiXeHienThi.setText(xe.getLoaiXe());
+
+        String gioVao = viTri.getThoiGianVao()
+                .format(DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy"));
+
+        gioVaoHienThi.setText(gioVao);
+
+        phiHienThi.setText(dinhDangTien(viTri.getPhiGui()));
+        phiHienThi.setVisible(true);
     }
+
     private static String dinhDangTien(long soTien) {//hàm định dạng tiền
         return String.format("%,d", soTien)
                 .replace(",", ".") + "đ";
