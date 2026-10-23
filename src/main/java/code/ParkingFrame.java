@@ -118,7 +118,7 @@ public class ParkingFrame {
 
         formNhanXe.setVisible(false);
 
-        SlotDetailPanel hangTieuDe = new SlotDetailPanel(maViTri, trangThai);
+        SlotDetailPanel hangTieuDe = new SlotDetailPanel(maViTri, trangThai,bienSoHienThi);
         //lặp tạo button
         for (int i = 1; i <= 12; i++) {//mỗi lần lặp tạo 1 nút mới JButton
             String id = "A" + i;
@@ -164,12 +164,7 @@ public class ParkingFrame {
                 nutTraXe.setEnabled(!parkingSlot.isEmpty());//chọn ô có xe thì nút trả xe được bật. Chọn ô trống thì nút bị khóa
                 nutNhanXe.setEnabled(parkingSlot.isEmpty());//choọn ô trống thì bật nút này lên
                 formNhanXe.setVisible(parkingSlot.isEmpty());//chỉ hiện form khi ô trống
-                hienThiChiTiet(
-                        viTriDangChon, thongTinViTri,
-                        hangTieuDe,
-                        bienSoHienThi, phiHienThi,
-                        loaiXeHienThi, gioVaoHienThi
-                );//hien thi vi tri
+                hangTieuDe.capNhat(viTriDangChon);//cap nhat thong tin vi tri khi click
             });
 
 
@@ -270,7 +265,7 @@ public class ParkingFrame {
         noiDungPhieu.add(khuPhi, BorderLayout.SOUTH);
 
 
-        hangTieuDe.setNoiDung(noiDungPhieu);
+        hangTieuDe.setNoiDung(noiDungPhieu,thongTinViTri,phiHienThi,loaiXeHienThi,gioVaoHienThi);
 
         JPanel vungNhapXe = new JPanel(new BorderLayout());
         vungNhapXe.setOpaque(false);
@@ -361,12 +356,7 @@ public class ParkingFrame {
 
             nutDangChon.setBackground(MAU_CO_XE);
 
-            hienThiChiTiet(
-                    viTriDangChon, thongTinViTri,
-                    hangTieuDe,
-                    bienSoHienThi, phiHienThi,
-                    loaiXeHienThi, gioVaoHienThi
-            );
+            hangTieuDe.capNhat(viTriDangChon);
             capNhatThongKe(quanLy, soDangCo, soConTrong, soDoanhThu);
 
             nutNhanXe.setEnabled(false);
@@ -406,12 +396,7 @@ public class ParkingFrame {
                     + " - TRỐNG</font></center></html>");
 
             nutDangChon.setBackground(MAU_TRONG);
-            hienThiChiTiet(
-                    viTriDangChon, thongTinViTri,
-                    hangTieuDe,
-                    bienSoHienThi, phiHienThi,
-                    loaiXeHienThi, gioVaoHienThi
-            );
+            hangTieuDe.capNhat(viTriDangChon);
             capNhatThongKe(quanLy, soDangCo, soConTrong, soDoanhThu);
 
             nutTraXe.setEnabled(false);
@@ -458,47 +443,8 @@ public class ParkingFrame {
         long doanhThu = quanLy.getDoanhThuHomNay();
         soDoanhThu.setText(dinhDangTien(doanhThu));//lay doanh thu
     }
-    //ham hiển thị thong tin chi tiet
+    //ham hiển thị thong tin chi tiet cu da dc chuyen sang SlotDetailPanel
 
-    private static void hienThiChiTiet(
-            ParkingSlot viTri,
-            JLabel thongTin,
-            SlotDetailPanel hangTieuDe,
-            JLabel bienSoHienThi,
-            JLabel phiHienThi,
-            JLabel loaiXeHienThi,
-            JLabel gioVaoHienThi) {
-
-        hangTieuDe.capNhat(viTri);
-
-        if (viTri.isEmpty()) {
-            thongTin.setText("Sẵn sàng nhận xe.");
-
-            bienSoHienThi.setVisible(false);
-            phiHienThi.setVisible(false);
-
-            loaiXeHienThi.setText("--");
-            gioVaoHienThi.setText("--");
-            return;
-        }
-
-        Vehicle xe = viTri.getVehicle();
-
-        thongTin.setText("");
-
-        bienSoHienThi.setText(xe.getBienSo());
-        bienSoHienThi.setVisible(true);
-
-        loaiXeHienThi.setText(xe.getLoaiXe());
-
-        String gioVao = viTri.getThoiGianVao()
-                .format(DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy"));
-
-        gioVaoHienThi.setText(gioVao);
-
-        phiHienThi.setText(dinhDangTien(viTri.getPhiGui()));
-        phiHienThi.setVisible(true);
-    }
 
     private static String dinhDangTien(long soTien) {//hàm định dạng tiền
         return String.format("%,d", soTien)

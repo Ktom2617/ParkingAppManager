@@ -18,7 +18,7 @@ public class ParkingManager {
     }
     public ParkingTicket checkOut(ParkingSlot slot){
         if(slot.isEmpty()){
-            throw new IllegalStateException("Vi tri dang trong!");
+            throw new IllegalStateException("Vị trí đang trống!");
         }
         for(ParkingTicket ve:danhSachVe){
             if(ve.isActive()&&ve.getMaViTri().equals(slot.getId())){
