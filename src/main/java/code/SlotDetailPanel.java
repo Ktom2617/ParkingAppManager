@@ -7,23 +7,44 @@ import java.awt.*;
 //QUẢN LÝ TOÀN BỘ PHIẾU THÔNG TIN GỬI XE
 public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
 
-    private JLabel maViTri;
-    private JLabel trangThai;
-    private JLabel bienSoHienThi;
-    private JLabel thongTinViTri;
-    private JLabel phiHienThi;
-    private JLabel loaiXeHienThi;
-    private JLabel gioVaoHienThi;
+    // Các thành phần hiển thị của bảng chi tiết
+    private JLabel maViTri = new JLabel("--");//phuc vu hien thi ma vi tri
+    private JLabel trangThai = new JLabel("CHƯA CHỌN");//phuc vu hien thi trang thai
+    private JLabel thongTinViTri = new JLabel("Chọn một ô để xem chi tiết");//phuc vu hien thi thong tin
+    private JLabel bienSoHienThi = new JLabel("");//phuc vu hien thi bien so
+    private JLabel phiHienThi = new JLabel("0đ");//phuc vu hien thi phi
+    private JLabel loaiXeHienThi = new JLabel("--");
+    private JLabel gioVaoHienThi = new JLabel("--");
 
-    public SlotDetailPanel(JLabel maViTri, JLabel trangThai, JLabel bienSoHienThi) {
+
+    public SlotDetailPanel() {
         super(new BorderLayout(0, 15));
         setOpaque(false);
 
-        this.maViTri = maViTri;
-        this.trangThai = trangThai;
-        this.bienSoHienThi=bienSoHienThi;
+        //Thiết lập màu sắc và font
+        maViTri.setFont(new Font("SansSerif", Font.BOLD, 34));
+        trangThai.setForeground(new Color(242, 183, 5));
 
-        // Tạo phần tiêu đề
+        thongTinViTri.setForeground(Color.WHITE);
+        thongTinViTri.setFont(new Font("SansSerif", Font.PLAIN, 15));
+
+        bienSoHienThi.setFont(new Font("SansSerif", Font.BOLD, 24));
+        bienSoHienThi.setForeground(new Color(17, 20, 22));
+        bienSoHienThi.setBackground(new Color(248, 248, 243));
+        bienSoHienThi.setOpaque(true);
+        bienSoHienThi.setBorder(
+                BorderFactory.createEmptyBorder(6, 10, 6, 10)
+        );
+        bienSoHienThi.setVisible(false);//ban đầu chưa chọn ô nào nên ẩn biển số
+
+        phiHienThi.setFont(new Font("SansSerif", Font.BOLD, 30));
+        phiHienThi.setForeground(new Color(242, 183, 5));
+        phiHienThi.setVisible(false);
+
+        loaiXeHienThi.setForeground(Color.WHITE);
+        gioVaoHienThi.setForeground(Color.WHITE);
+
+        //Hàng tiêu đề
         JPanel hangTieuDe = new JPanel(new BorderLayout());
         hangTieuDe.setOpaque(false);
 
@@ -37,26 +58,70 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
         hangTieuDe.add(maViTri, BorderLayout.WEST);
         hangTieuDe.add(trangThai, BorderLayout.EAST);
 
+        //Khu vực biển số
+        JPanel hangBienSo = new JPanel(
+                new FlowLayout(FlowLayout.LEFT, 0, 0)
+        );
+        hangBienSo.setOpaque(false);
+        hangBienSo.add(bienSoHienThi);
+
+        //Bảng loại xe và giờ vào
+        JPanel bangThongTin = new JPanel(
+                new GridLayout(2, 2, 10, 12)
+        );
+        bangThongTin.setOpaque(false);
+
+        JLabel nhanLoaiXe = new JLabel("Loại xe");
+        JLabel nhanGioVao = new JLabel("Giờ vào");
+
+        Color mauChuPhu = new Color(152, 162, 168);
+        nhanLoaiXe.setForeground(mauChuPhu);
+        nhanGioVao.setForeground(mauChuPhu);
+
+        bangThongTin.add(nhanLoaiXe);
+        bangThongTin.add(loaiXeHienThi);
+        bangThongTin.add(nhanGioVao);
+        bangThongTin.add(gioVaoHienThi);
+
+        JPanel khuThongTin = new JPanel(new BorderLayout(0, 10));
+        khuThongTin.setOpaque(false);
+        khuThongTin.add(thongTinViTri, BorderLayout.NORTH);
+        khuThongTin.add(bangThongTin, BorderLayout.CENTER);
+
+        // Khu vực phí gửi xe
+        JPanel khuPhi = new JPanel(new BorderLayout(0, 6));
+        khuPhi.setOpaque(false);
+
+        khuPhi.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(
+                        1, 0, 0, 0, new Color(50, 58, 63)
+                ),
+                BorderFactory.createEmptyBorder(14, 0, 0, 0)
+        ));
+
+        JLabel nhanPhi = new JLabel("PHÍ HIỆN TẠI");
+        nhanPhi.setForeground(mauChuPhu);
+
+        khuPhi.add(nhanPhi, BorderLayout.NORTH);
+        khuPhi.add(phiHienThi, BorderLayout.CENTER);
+
+        //Ghép nội dung phiếu
+        JPanel noiDungPhieu = new JPanel(new BorderLayout(0, 10));
+        noiDungPhieu.setOpaque(false);
+        noiDungPhieu.setBorder(
+                BorderFactory.createEmptyBorder(8, 0, 12, 0)
+        );
+
+        noiDungPhieu.add(hangBienSo, BorderLayout.NORTH);
+        noiDungPhieu.add(khuThongTin, BorderLayout.CENTER);
+        noiDungPhieu.add(khuPhi, BorderLayout.SOUTH);
+
         add(hangTieuDe, BorderLayout.NORTH);
+        add(noiDungPhieu, BorderLayout.CENTER);
     }
 
-    public void setNoiDung(
-            JPanel noiDung,
-            JLabel thongTinViTri,
-            JLabel phiHienThi,
-            JLabel loaiXeHienThi,
-            JLabel gioVaoHienThi) {
-
-        this.thongTinViTri = thongTinViTri;
-        this.phiHienThi = phiHienThi;
-        this.loaiXeHienThi = loaiXeHienThi;
-        this.gioVaoHienThi = gioVaoHienThi;
-
-        add(noiDung, BorderLayout.CENTER);
-    }
-
-
-    public void capNhat(ParkingSlot viTri) {//ham hiển thị thong tin chi tiet
+    //Cập nhật toàn bộ phiếu theo vị trí được chọn
+    public void capNhat(ParkingSlot viTri) {
         maViTri.setText(viTri.getId());
 
         if (viTri.isEmpty()) {
@@ -68,31 +133,33 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
 
             loaiXeHienThi.setText("--");
             gioVaoHienThi.setText("--");
-            return;
+
+        } else {
+            Vehicle xe = viTri.getVehicle();
+
+            trangThai.setText("ĐANG CÓ XE");
+            thongTinViTri.setText("");
+
+            bienSoHienThi.setText(xe.getBienSo());
+            bienSoHienThi.setVisible(true);
+
+            loaiXeHienThi.setText(xe.getLoaiXe());
+
+            String gioVao = viTri.getThoiGianVao()
+                    .format(DateTimeFormatter.ofPattern(
+                            "HH:mm:ss dd/MM/yyyy"
+                    ));
+            gioVaoHienThi.setText(gioVao);
+
+            String tien = String.format(
+                    Locale.US, "%,d", viTri.getPhiGui()
+            ).replace(",", ".");
+
+            phiHienThi.setText(tien + "đ");
+            phiHienThi.setVisible(true);
         }
 
-        Vehicle xe = viTri.getVehicle();
-
-        trangThai.setText("ĐANG CÓ XE");
-        thongTinViTri.setText("");
-
-        bienSoHienThi.setText(xe.getBienSo());
-        bienSoHienThi.setVisible(true);
-
-        loaiXeHienThi.setText(xe.getLoaiXe());
-
-        String gioVao = viTri.getThoiGianVao()
-                .format(DateTimeFormatter.ofPattern(
-                        "HH:mm:ss dd/MM/yyyy"
-                ));
-
-        gioVaoHienThi.setText(gioVao);
-
-        String tien = String.format(Locale.US, "%,d",
-                viTri.getPhiGui()).replace(",", ".");
-
-        phiHienThi.setText(tien + "đ");
-        phiHienThi.setVisible(true);
+        revalidate();
+        repaint();
     }
-
 }

@@ -51,4 +51,7 @@ public class ParkingManager {
         }
         return tongTien;
     }
+    public ArrayList<ParkingTicket> getDanhSachVe() {
+        return new ArrayList<>(danhSachVe);
+    }
 }
