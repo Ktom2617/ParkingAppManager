@@ -25,7 +25,6 @@ public class HistoryPanel extends JPanel {
     private static final Color MAU_CHU_PHU = new Color(152, 162, 168);   // --ink-2: #98A2A8
     private static final Color MAU_DUONG_KE = new Color(50, 58, 63);     // --rule: #323A3F
     private static final Color MAU_VANG = new Color(242, 183, 5);        // --signal: #F2B705
-    private static final Color MAU_XANH = new Color(5, 242, 9);
 
     private DefaultTableModel modelBang;
     private JTable bangLichSu;
@@ -79,11 +78,11 @@ public class HistoryPanel extends JPanel {
         cumTieuDe.setOpaque(false);
 
         JLabel tieuDe = new JLabel("Lịch sử gần đây");
-        tieuDe.setFont(new Font("SansSerif", Font.BOLD, 20));
+        tieuDe.setFont(AppFonts.display(24f));
         tieuDe.setForeground(MAU_CHU_CHINH);
 
         JLabel moTaPhu = new JLabel("Xe mới vào nằm trên cùng.");
-        moTaPhu.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        moTaPhu.setFont(AppFonts.body(13f));
         moTaPhu.setForeground(MAU_CHU_PHU);
 
         cumTieuDe.add(tieuDe);
@@ -91,7 +90,7 @@ public class HistoryPanel extends JPanel {
 
         // Nút Xem tất cả / Thu gọn bên phải (ẩn khi số vé <= 5)
         nutThuGon = new JButton("Xem tất cả");
-        nutThuGon.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        nutThuGon.setFont(AppFonts.body(13f));
         nutThuGon.setForeground(MAU_CHU_CHINH);
         nutThuGon.setContentAreaFilled(false);
         nutThuGon.setBorderPainted(false);
@@ -146,7 +145,7 @@ public class HistoryPanel extends JPanel {
         bangLichSu.setSelectionBackground(MAU_NEN_HOVER);
         bangLichSu.setSelectionForeground(MAU_CHU_CHINH);
         bangLichSu.setRowHeight(40);
-        bangLichSu.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        bangLichSu.setFont(AppFonts.body(14f));
         bangLichSu.setShowVerticalLines(false);
         bangLichSu.setShowHorizontalLines(true);
         bangLichSu.setGridColor(MAU_DUONG_KE);
@@ -165,7 +164,7 @@ public class HistoryPanel extends JPanel {
                         table, value, isSelected, hasFocus, row, column);
                 lbl.setBackground(MAU_NEN_CARD);
                 lbl.setForeground(MAU_CHU_PHU);
-                lbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+                lbl.setFont(AppFonts.bodyBold(14f));
 
                 // Căn phải cho cột THỜI GIAN GỬI (cột 6) và PHÍ (cột 7) giống class .num trong HTML
                 if (column == 6 || column == 7) {
@@ -195,7 +194,7 @@ public class HistoryPanel extends JPanel {
 
                 lbl.setBackground(isSelected ? MAU_NEN_HOVER : MAU_NEN_CARD);
                 lbl.setForeground(MAU_CHU_CHINH);
-                lbl.setFont(new Font("SansSerif", Font.PLAIN, 14));
+                lbl.setFont(AppFonts.body(14f));
                 lbl.setBorder(padding);
 
                 // Căn lề: Thời gian gửi (6) và Phí (7) căn phải
@@ -207,7 +206,7 @@ public class HistoryPanel extends JPanel {
 
                 // Làm nổi bật cột Biển số (cột 3)
                 if (column == 3) {
-                    lbl.setFont(new Font("SansSerif", Font.BOLD, 14));
+                    lbl.setFont(AppFonts.bodyBold(14f));
                 }
 
                 // Đổi màu cột Trạng thái (cột 8): vàng nếu đang gửi, xám nếu đã trả
@@ -215,9 +214,9 @@ public class HistoryPanel extends JPanel {
                     String text = value.toString();
                     if (text.contains("Đang gửi")) {
                         lbl.setForeground(MAU_VANG);
-                        lbl.setFont(new Font("SansSerif", Font.BOLD, 14));
+                        lbl.setFont(AppFonts.bodyBold(14f));
                     } else {
-                        lbl.setForeground(MAU_XANH);
+                        lbl.setForeground(MAU_CHU_PHU);
                     }
                 }
 

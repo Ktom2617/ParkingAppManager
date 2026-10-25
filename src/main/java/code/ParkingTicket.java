@@ -29,6 +29,17 @@ public class ParkingTicket {
         this.phiGui=vehicle.tinhPhi(gioVao,gioRa);
         this.gioRa=gioRa;
     }
+    public void capNhatXe(Vehicle xeMoi) {//edit xe đang gửi
+        if (!isActive()) {
+            throw new IllegalStateException(
+                    "Không thể sửa vé đã trả xe!"
+            );
+        }
+        if (xeMoi == null) {
+            throw new IllegalArgumentException("Xe mới không hợp lệ!");
+        }
+        this.vehicle = xeMoi;
+    }
     //các hàm getter
     public Vehicle getVehicle(){
         return vehicle;

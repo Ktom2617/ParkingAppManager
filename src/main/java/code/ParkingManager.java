@@ -54,4 +54,48 @@ public class ParkingManager {
     public ArrayList<ParkingTicket> getDanhSachVe() {
         return new ArrayList<>(danhSachVe);
     }
+
+    public void suaThongTinXe(ParkingSlot slot, Vehicle xeMoi) {//edit xe đang gửi
+        // 1. Kiem tra du lieu
+        if (slot == null || slot.isEmpty()) {
+            throw new IllegalStateException("Vị trí không có xe!");
+        }
+        if (xeMoi == null || xeMoi.getBienSo() == null
+                || xeMoi.getBienSo().trim().isEmpty()) {
+            throw new IllegalArgumentException("Biển số không hợp lệ!");
+        }
+        // 2. Tim ve dang gui cua vi tri
+        ParkingTicket veCanSua = null;
+        for (ParkingTicket ve : danhSachVe) {
+            if (ve.isActive() && ve.getMaViTri().equals(slot.getId())) {
+                veCanSua = ve;
+                break;
+            }
+        }
+        if (veCanSua == null) {
+            throw new IllegalStateException(
+                    "Không tìm thấy vé đang gửi!"
+            );
+        }
+        // 3. Kiem tra bien so co trung voi xe khac khong
+        String bienMoi = chuanHoaBienSo(xeMoi.getBienSo());
+        for (ParkingTicket ve : danhSachVe) {
+            if (ve.isActive() && ve != veCanSua) {
+                String bienCu = chuanHoaBienSo(ve.getVehicle().getBienSo());
+                if (bienMoi.equals(bienCu)) {
+                    throw new IllegalArgumentException(
+                            "Biển số đã tồn tại trong bãi!"
+                    );
+                }
+            }
+        }
+        // 4. Cap nhat dong bo
+        slot.capNhatXe(xeMoi);
+        veCanSua.capNhatXe(xeMoi);
+    }
+    private String chuanHoaBienSo(String bienSo) {
+        return bienSo.toUpperCase(java.util.Locale.ROOT)
+                .replaceAll("[\\s.-]", "");
+    }
+
 }

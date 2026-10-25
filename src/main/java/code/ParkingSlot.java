@@ -46,5 +46,15 @@ public class ParkingSlot {
         this.vehicle=null;
         this.thoiGianVao = null;
     }
+    public void capNhatXe(Vehicle xeMoi) {//edit xe đang gửi
+        if (isEmpty()) {
+            throw new IllegalStateException("Vi trí đang trống!");
+        }
 
+        if (xeMoi == null) {
+            throw new IllegalArgumentException("Xe mới không hợp lệ!");
+        }
+
+        this.vehicle = xeMoi;
+    }
 }

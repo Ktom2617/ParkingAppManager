@@ -6,6 +6,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class ParkingFrame {
     private static JButton nutDangChon = null;//nhớ nút hiện đang được chọn.
@@ -24,7 +27,7 @@ public class ParkingFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JLabel title = new JLabel("PARKING MANAGER - PARKING MAP", SwingConstants.CENTER);//title
-        title.setFont(new Font("Arial", Font.BOLD, 24));
+        title.setFont(AppFonts.display(24f));
 
 
         JPanel map = new JPanel(new GridLayout(1, 3, 36, 0));//Bản đồ gồm 1 hàng, 3 dãy, cách nhau 36 pixel để dành chỗ cho làn đường
@@ -51,6 +54,10 @@ public class ParkingFrame {
         JLabel soDoanhThu = new JLabel("0đ");//phuc vu hien thi doanh thu
         JButton nutTraXe = new JButton("TRẢ XE");//nút trả xe
         JButton nutNhanXe = new JButton("NHẬN XE");//nút nhận xe
+        JButton nutSuaXe = new JButton("SỬA THÔNG TIN");//nút sửa thông tin xe đang gửi
+        nutSuaXe.setEnabled(false);
+        nutSuaXe.setFont(AppFonts.bodyBold(15f));
+        nutSuaXe.putClientProperty("JButton.buttonType", "roundRect");
 //tạo ô nhâp liệu
         JTextField nhapBienSo = new JTextField();
         JComboBox<String> chonLoaiXe = new JComboBox<>(
@@ -83,15 +90,17 @@ public class ParkingFrame {
 
         nhanBienSo.setForeground(mauChuPhu);
         nhanLoaiXe.setForeground(mauChuPhu);
+        nhanLoaiXe.setFont(AppFonts.bodyBold(13f));
+
 
         nhapBienSo.setBackground(mauNenInput);
         nhapBienSo.setForeground(Color.WHITE);
         nhapBienSo.setCaretColor(Color.WHITE);
-        nhapBienSo.setFont(new Font("SansSerif", Font.BOLD, 16));
+        nhanBienSo.setFont(AppFonts.bodyBold(13f));
 
         chonLoaiXe.setBackground(mauNenInput);
         chonLoaiXe.setForeground(Color.WHITE);
-        chonLoaiXe.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        chonLoaiXe.setFont(AppFonts.body(15f));
 
         nhapBienSo.putClientProperty(
                 "JTextField.placeholderText", "VD: 29A-12345");
@@ -114,7 +123,7 @@ public class ParkingFrame {
             ParkingSlotButton slot = new ParkingSlotButton(id);//thêm 1 button
             nutTheoViTri.put(parkingSlot, slot);
             slot.setFocusPainted(false);
-            slot.setFont(new Font("SansSerif", Font.BOLD, 16));
+            slot.setFont(AppFonts.bodyBold(14f));
             slot.setForeground(Color.WHITE);
             slot.setForeground(new Color(25, 35, 45));
             slot.setOpaque(true);
@@ -146,6 +155,7 @@ public class ParkingFrame {
                 viTriDangChon = parkingSlot;//Ghi nhớ vị chon
                 nutTraXe.setEnabled(!parkingSlot.isEmpty());//chọn ô có xe thì nút trả xe được bật. Chọn ô trống thì nút bị khóa
                 nutNhanXe.setEnabled(parkingSlot.isEmpty());//choọn ô trống thì bật nút này lên
+                nutSuaXe.setEnabled(!parkingSlot.isEmpty());//ô có xe thì bật nút
                 formNhanXe.setVisible(parkingSlot.isEmpty());//chỉ hiện form khi ô trống
                 chiTietXe.capNhat(viTriDangChon);//cap nhat thong tin vi tri khi click
             });
@@ -177,11 +187,39 @@ public class ParkingFrame {
         header.putClientProperty("FlatLaf.style",
                 "arc: 18; background: #1A1E21");
 
-        JLabel logo = new JLabel("P   ParkingManager");
-        logo.setFont(new Font("SansSerif", Font.BOLD, 22));
-        logo.setForeground(new Color(245, 183, 0));
 
-        header.add(logo, BorderLayout.WEST);
+        JLabel logo = new JLabel("P", SwingConstants.CENTER);
+        logo.setFont(AppFonts.display(28f));
+        logo.setForeground(new Color(28, 22, 0));
+        logo.setBackground(new Color(242, 183, 5));
+        logo.setOpaque(true);
+        logo.setPreferredSize(new Dimension(38, 38));
+        logo.setBorder(BorderFactory.createLineBorder(
+                new Color(28, 22, 0), 2
+        ));
+
+
+        JLabel tenApp = new JLabel("Parking Manager");
+        tenApp.setFont(AppFonts.display(26f));
+        tenApp.setForeground(new Color(236, 235, 227));
+
+        JLabel moTaApp = new JLabel("PARKING SYSTEM");
+        moTaApp.setFont(AppFonts.body(11f));
+        moTaApp.setForeground(new Color(167, 174, 178));
+
+        JPanel cumTen = new JPanel(new GridLayout(2, 1, 0, 0));
+        cumTen.setOpaque(false);
+        cumTen.add(tenApp);
+        cumTen.add(moTaApp);
+
+        JPanel cumLogo = new JPanel(new BorderLayout(10, 0));
+        cumLogo.setOpaque(false);
+        cumLogo.add(logo, BorderLayout.WEST);
+        cumLogo.add(cumTen, BorderLayout.CENTER);
+
+        header.add(cumLogo, BorderLayout.WEST);
+
+
         JTextField timBienSo = new JTextField();//seảrch
         timBienSo.putClientProperty(
                 "JTextField.placeholderText", "Tìm biển số xe..."
@@ -223,19 +261,55 @@ public class ParkingFrame {
         });
 
 
-        JLabel dongHo = new JLabel();//thêm đồng hồ cho hê thống
-        dongHo.setFont(new Font("SansSerif", Font.BOLD, 14));
-        dongHo.setForeground(new Color(231, 234, 235));
-        DateTimeFormatter dinhDangDongHo =
-                DateTimeFormatter.ofPattern("HH:mm:ss  |  dd/MM/yyyy");
-        dongHo.setText(LocalDateTime.now().format(dinhDangDongHo));
-        Timer timer = new Timer(1000, e -> {
-            dongHo.setText(
-                    LocalDateTime.now().format(dinhDangDongHo)
-            );
-        });
-        timer.start();
-        header.add(dongHo, BorderLayout.EAST);
+//TẠO đồng hồ
+        JLabel dongHo = new JLabel();
+        JLabel ngayThang = new JLabel();
+
+        dongHo.setFont(AppFonts.display(32f));
+        dongHo.setForeground(new Color(233, 232, 223));
+        dongHo.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        ngayThang.setFont(AppFonts.body(13f));
+        ngayThang.setForeground(new Color(167, 174, 178));
+        ngayThang.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        dongHo.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        ngayThang.setAlignmentX(Component.RIGHT_ALIGNMENT);
+
+// Gom hai dong vao mot JPanel
+        JPanel cumDongHo = new JPanel();
+        cumDongHo.setOpaque(false);
+        cumDongHo.setLayout(
+                new BoxLayout(cumDongHo, BoxLayout.Y_AXIS)
+        );
+
+        cumDongHo.add(dongHo);
+        cumDongHo.add(ngayThang);
+
+// Dinh dang thoi gian
+        DateTimeFormatter dinhDangGio =
+                DateTimeFormatter.ofPattern("HH:mm:ss");
+
+        DateTimeFormatter dinhDangNgay =
+                DateTimeFormatter.ofPattern(
+                        "EEEE, dd/MM/yyyy",
+                        Locale.forLanguageTag("vi-VN")
+                );
+// Cap nhat ca hai dong
+        Runnable capNhatDongHo = () -> {
+            LocalDateTime hienTai = LocalDateTime.now();
+            dongHo.setText(hienTai.format(dinhDangGio));
+            ngayThang.setText(hienTai.format(dinhDangNgay));
+        };
+// Hien thi ngay khi mo ung dung
+        capNhatDongHo.run();
+// Cap nhat moi giay
+        Timer timerDongHo = new Timer(
+                1000,
+                e -> capNhatDongHo.run()
+        );
+        timerDongHo.start();
+        header.add(cumDongHo, BorderLayout.EAST);
 
         JPanel stats = new JPanel(new GridLayout(1, 4, 12, 0));//tạo giao dien thẻ thống kê/thông tin
         stats.setOpaque(false);
@@ -267,34 +341,26 @@ public class ParkingFrame {
         vungNhapXe.setOpaque(false);
         vungNhapXe.add(formNhanXe, BorderLayout.NORTH);
 
-        JPanel noiDungCuon = new JPanel(new BorderLayout(0, 12));//cuộn menu
-        noiDungCuon.setOpaque(false);
-        noiDungCuon.add(chiTietXe, BorderLayout.NORTH);
-        noiDungCuon.add(vungNhapXe, BorderLayout.CENTER);//Gộp phần thông tin xe và form nhận xe thành một khối
+        JPanel noiDungChiTiet = new JPanel(new BorderLayout(0, 12));
+        noiDungChiTiet.setOpaque(false);
 
-        JScrollPane thanhCuon = new JScrollPane(noiDungCuon);//Đặt khối đó bên trong một JScrollPane. Nếu nội dung vượt quá diện tích hiển thị, Swing sẽ cho phép cuộn
-        thanhCuon.setBorder(null);
-        thanhCuon.setOpaque(false);
-        thanhCuon.getViewport().setOpaque(false);
-        thanhCuon.setHorizontalScrollBarPolicy(
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
-        );
-        thanhCuon.getVerticalScrollBar().setUnitIncrement(16);
+        noiDungChiTiet.add(chiTietXe, BorderLayout.NORTH);
+        noiDungChiTiet.add(vungNhapXe, BorderLayout.CENTER);
 
-        details.add(thanhCuon, BorderLayout.CENTER);
+        details.add(noiDungChiTiet, BorderLayout.CENTER);
 
 
         nutTraXe.setBackground(new Color(242, 183, 5));
         nutTraXe.setForeground(new Color(28, 22, 0));
-        nutTraXe.setFont(new Font("SansSerif", Font.BOLD, 16));
+        nutTraXe.setFont(AppFonts.bodyBold(15f));
         nutNhanXe.setBackground(new Color(31, 127, 70));
         nutNhanXe.setForeground(new Color(214, 206, 206));
-        nutNhanXe.setFont(new Font("SansSerif", Font.BOLD, 16));
+        nutNhanXe.setFont(AppFonts.bodyBold(15f));
 
         nutTraXe.putClientProperty("JButton.buttonType", "roundRect");
         nutTraXe.setEnabled(false);
 
-        JPanel actions = new JPanel(new GridLayout(2, 1, 0, 10));//taạo khung 2 nút
+        JPanel actions = new JPanel(new GridLayout(3, 1, 0, 10));//taạo khung 3 nút
         actions.setOpaque(false);
         actions.setBorder(
                 BorderFactory.createEmptyBorder(16, 0, 0, 0)
@@ -305,6 +371,7 @@ public class ParkingFrame {
 
         actions.add(nutNhanXe);
         actions.add(nutTraXe);
+        actions.add(nutSuaXe);
         details.add(actions, BorderLayout.SOUTH);
 
 
@@ -349,6 +416,7 @@ public class ParkingFrame {
 
             nutNhanXe.setEnabled(false);
             nutTraXe.setEnabled(true);
+            nutSuaXe.setEnabled(true);
             nhapBienSo.setText("");
             formNhanXe.setVisible(false);//sau khi nhận xe, ô nhập sẽ được xóa và form tự ẩn
         });
@@ -387,19 +455,154 @@ public class ParkingFrame {
 
             nutTraXe.setEnabled(false);
             nutNhanXe.setEnabled(true);
+            nutSuaXe.setEnabled(false);
             formNhanXe.setVisible(true);
             System.out.println("Đã thu: " + ve.getPhiGui() + " VND");
         });
 
 
+        nutSuaXe.addActionListener(e -> {//hành động xử lý nút sửa xe
+            // 1. Kiem tra vi tri dang chon
+            if (viTriDangChon == null || viTriDangChon.isEmpty()) {
+                return;
+            }
+
+            Vehicle xeCu = viTriDangChon.getVehicle();
+
+            // 2. Tao cac truong nhap
+            JTextField nhapBienSoMoi = new JTextField(xeCu.getBienSo());
+
+            JComboBox<String> chonLoaiXeMoi = new JComboBox<>(new String[]{"Xe máy", "Ô tô"});
+
+            // Chon san loai xe hien tai
+            chonLoaiXeMoi.setSelectedIndex(xeCu instanceof Car ? 1 : 0);
+
+            // 3. Tao giao dien hop thoai
+            JPanel formSua = new JPanel(new GridLayout(0, 1, 0, 8));
+            formSua.add(new JLabel("BIỂN SỐ"));
+            formSua.add(nhapBienSoMoi);
+            formSua.add(new JLabel("LOẠI XE"));
+            formSua.add(chonLoaiXeMoi);
+            formSua.add(new JLabel("Giờ vào được giữ nguyên."));
+
+            // 4. Hien hop thoai
+            int luaChon = JOptionPane.showConfirmDialog(
+                    frame,
+                    formSua,
+                    "Sửa thông tin xe - " + viTriDangChon.getId(),
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+            if (luaChon != JOptionPane.OK_OPTION) {
+                return;
+            }
+            // 5. Lay du lieu moi
+            String bienSoMoi = nhapBienSoMoi.getText()
+                    .trim()
+                    .toUpperCase(java.util.Locale.ROOT);
+
+            if (bienSoMoi.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        frame, "Biển số không được để trống!"
+                );
+                return;
+            }
+
+            Vehicle xeMoi;
+            if (chonLoaiXeMoi.getSelectedIndex() == 1) {
+                xeMoi = new Car(bienSoMoi);
+            } else {
+                xeMoi = new Motorbike(bienSoMoi);
+            }
+            // 6. Yeu cau Manager sua thong tin
+            try {
+                quanLy.suaThongTinXe(viTriDangChon, xeMoi);//kiểm tra dữ liệu và đồng bộ xe trong ParkingSlot với vé đang hoạt động trong ParkingTicket
+
+                // 7. Cap nhat giao dien
+                capNhatHienThiO(nutDangChon, viTriDangChon);
+                chiTietXe.capNhat(viTriDangChon);
+                lichSuPanel.capNhatLichSu(quanLy.getDanhSachVe());
+
+                JOptionPane.showMessageDialog(
+                        frame, "Đã cập nhật thông tin xe!"
+                );
+
+            } catch (IllegalArgumentException | IllegalStateException ex) {
+                JOptionPane.showMessageDialog(
+                        frame,
+                        ex.getMessage(),
+                        "Không thể sửa thông tin",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
+
+        JPanel khungMap = new JPanel(new BorderLayout());//chuyển map vào trung tâm khung map
+        khungMap.setBackground(new Color(26, 30, 33));
+        khungMap.setBorder(BorderFactory.createLineBorder(
+                new Color(50, 58, 63), 1
+        ));
+// Tieu de ban do
+        JLabel tieuDeMap = new JLabel("SƠ ĐỒ BÃI XE");
+        tieuDeMap.setFont(AppFonts.display(24f));
+        tieuDeMap.setForeground(new Color(231, 234, 235));
+
+        JLabel moTaMap = new JLabel(
+                "Chọn một ô để xem chi tiết hoặc nhận xe."
+        );
+        moTaMap.setFont(AppFonts.body(13f));
+        moTaMap.setForeground(new Color(152, 162, 168));
+
+        JPanel cumTieuDeMap = new JPanel(new GridLayout(2, 1, 0, 4));
+        cumTieuDeMap.setOpaque(false);
+        cumTieuDeMap.add(tieuDeMap);
+        cumTieuDeMap.add(moTaMap);
+
+        JPanel dauMap = new JPanel(new BorderLayout());
+        dauMap.setOpaque(false);
+        dauMap.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(
+                        0, 0, 1, 0, new Color(50, 58, 63)),
+                BorderFactory.createEmptyBorder(14, 16, 14, 16)
+        ));
+        dauMap.add(cumTieuDeMap, BorderLayout.WEST);
+        khungMap.add(dauMap, BorderLayout.NORTH);
+        khungMap.add(map, BorderLayout.CENTER);
+
+        JPanel chuThichMap = new JPanel(//chú thích
+                new FlowLayout(FlowLayout.LEFT, 20, 10)
+        );
+        chuThichMap.setOpaque(false);
+
+        JLabel chuThichTrong = new JLabel("□  Ô trống");
+        JLabel chuThichCoXe = new JLabel("■  Có xe");
+        JLabel chuThichDangChon = new JLabel("□  Đang chọn");
+
+        chuThichTrong.setFont(AppFonts.body(13f));
+        chuThichCoXe.setFont(AppFonts.body(13f));
+        chuThichDangChon.setFont(AppFonts.body(13f));
+
+        chuThichTrong.setForeground(new Color(152, 162, 168));
+        chuThichCoXe.setForeground(new Color(231, 234, 235));
+        chuThichDangChon.setForeground(new Color(242, 183, 5));
+
+        chuThichMap.add(chuThichTrong);
+        chuThichMap.add(chuThichCoXe);
+        chuThichMap.add(chuThichDangChon);
+
+        khungMap.add(chuThichMap, BorderLayout.SOUTH);
+
+
+
         JSplitPane split = new JSplitPane(
-                JSplitPane.HORIZONTAL_SPLIT, map, details//tạo một vùng chia đôi, với map ở bên trái và details ở bên phải
+                JSplitPane.HORIZONTAL_SPLIT, khungMap, details//tạo một vùng chia đôi, với map ở bên trái và details ở bên phải
         );
         split.setResizeWeight(0.67);
         split.setDividerSize(10);
         split.setBorder(null);
 
-        split.setPreferredSize(new Dimension(900, 480));
+        split.setPreferredSize(new Dimension(900, 560));
         lichSuPanel.setPreferredSize(new Dimension(900, 300));
 
         panel.add(split, BorderLayout.CENTER);
@@ -425,10 +628,10 @@ public class ParkingFrame {
                 "arc: 16; background: #1A1E21");
 
         JLabel title = new JLabel(ten);
-        title.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        title.setFont(AppFonts.display(20f));
         title.setForeground(new Color(170, 175, 185));
 
-        number.setFont(new Font("SansSerif", Font.BOLD, 26));
+        number.setFont(AppFonts.display(34f));
         number.setForeground(new Color(231, 234, 235));
 
         card.add(title, BorderLayout.NORTH);
@@ -480,6 +683,9 @@ public class ParkingFrame {
                     + "</font></center></html>");
 
             nut.setBackground(new Color(53, 60, 66));
+        }
+        if (nut instanceof ParkingSlotButton) {
+            ((ParkingSlotButton) nut).capNhat(viTri);
         }
     }
 

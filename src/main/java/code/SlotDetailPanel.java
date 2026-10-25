@@ -22,13 +22,12 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
         setOpaque(false);
 
         //Thiết lập màu sắc và font
-        maViTri.setFont(new Font("SansSerif", Font.BOLD, 34));
-        trangThai.setForeground(new Color(242, 183, 5));
+        maViTri.setFont(AppFonts.display(44f));
 
         thongTinViTri.setForeground(Color.WHITE);
-        thongTinViTri.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        thongTinViTri.setFont(AppFonts.body(15f));
 
-        bienSoHienThi.setFont(new Font("SansSerif", Font.BOLD, 24));
+        bienSoHienThi.setFont(AppFonts.BienSo(24f));
         bienSoHienThi.setForeground(new Color(17, 20, 22));
         bienSoHienThi.setBackground(new Color(248, 248, 243));
         bienSoHienThi.setOpaque(true);
@@ -37,7 +36,7 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
         );
         bienSoHienThi.setVisible(false);//ban đầu chưa chọn ô nào nên ẩn biển số
 
-        phiHienThi.setFont(new Font("SansSerif", Font.BOLD, 30));
+        phiHienThi.setFont(AppFonts.display(42f));
         phiHienThi.setForeground(new Color(242, 183, 5));
         phiHienThi.setVisible(false);
 
@@ -122,10 +121,16 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
 
     //Cập nhật toàn bộ phiếu theo vị trí được chọn
     public void capNhat(ParkingSlot viTri) {
+        if (viTri == null) {
+            maViTri.setText("--");
+            trangThai.setText("CHƯA CHỌN");
+            trangThai.setForeground(new Color(177, 161, 161));
+            return;
+        }
         maViTri.setText(viTri.getId());
-
         if (viTri.isEmpty()) {
             trangThai.setText("TRỐNG");
+            trangThai.setForeground(new Color(31, 230, 71));
             thongTinViTri.setText("Sẵn sàng nhận xe.");
 
             bienSoHienThi.setVisible(false);
@@ -138,6 +143,7 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
             Vehicle xe = viTri.getVehicle();
 
             trangThai.setText("ĐANG CÓ XE");
+            trangThai.setForeground(new Color(242, 183, 5));
             thongTinViTri.setText("");
 
             bienSoHienThi.setText(xe.getBienSo());

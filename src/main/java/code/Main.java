@@ -8,6 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
         FlatDarkLaf.setup();//giao diện
+        UIManager.put("defaultFont", AppFonts.body(15f));
         SwingUtilities.invokeLater(ParkingFrame::createWindow);//chương trình tạo cửa sổ.
     }
 }
