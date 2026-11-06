@@ -4,10 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
+import java.time.Duration;
 import java.util.Map;
 import java.util.LinkedHashMap;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class ParkingFrame {
@@ -430,11 +429,40 @@ public class ParkingFrame {
 
             Vehicle xe = viTriDangChon.getVehicle();
 
-            String thongBao = "Biển số: " + xe.getBienSo()
-                    + "\nLoại xe: " + xe.getLoaiXe()
-                    + "\nVị trí: " + viTriDangChon.getId()
-                    + "\nPhí gửi: " + viTriDangChon.getPhiGui() + "đ"
-                    + "\n\nXác nhận trả xe?";
+
+            LocalDateTime gioVao = viTriDangChon.getThoiGianVao();
+            LocalDateTime gioRaDuKien = LocalDateTime.now();
+
+        // Tinh thoi gian da gui
+            Duration thoiGian = Duration.between(gioVao, gioRaDuKien);
+            long tongPhut = Math.max(0, thoiGian.toMinutes());
+            long gio = tongPhut / 60;
+            long phut = tongPhut % 60;
+            String thoiGianGui;
+            if (gio == 0) {
+                thoiGianGui = phut + " phút";
+            } else {
+                thoiGianGui = gio + " giờ " + phut + " phút";
+            }
+        // Dinh dang ngay gio
+            DateTimeFormatter dinhDang =
+                    DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+
+        // Tinh phi theo thoi diem hien tai
+            long phiGui = xe.tinhPhi(gioVao, gioRaDuKien);
+            String thongBao =
+                    "Biển số: " + xe.getBienSo()
+                            + "\nLoại xe: " + xe.getLoaiXe()
+                            + "\nVị trí: " + viTriDangChon.getId()
+                            + "\n"
+                            + "\nGiờ vào: " + gioVao.format(dinhDang)
+                            + "\nGiờ ra dự kiến: " + gioRaDuKien.format(dinhDang)
+                            + "\nĐã gửi: " + thoiGianGui
+                            + "\n"
+                            + "\nPhí gửi: " + String.format("%,d", phiGui)
+                            .replace(",", ".") + "đ"
+                            + "\n\nXác nhận trả xe?";
+
 
             int luaChon = JOptionPane.showConfirmDialog(//tạo lua chọn confỉrm
                     frame, thongBao, "Xác nhận trả xe",
@@ -457,7 +485,7 @@ public class ParkingFrame {
             nutNhanXe.setEnabled(true);
             nutSuaXe.setEnabled(false);
             formNhanXe.setVisible(true);
-            System.out.println("Đã thu: " + ve.getPhiGui() + " VND");
+            System.out.println("Đã trả xe: "+ xe.getBienSo()+ " tại slot "+ve.getMaViTri()+" ;Đã thu: " + ve.getPhiGui() + " VND");
         });
 
 

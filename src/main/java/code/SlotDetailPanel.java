@@ -1,5 +1,7 @@
 package code;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import javax.swing.*;
@@ -15,6 +17,10 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
     private JLabel phiHienThi = new JLabel("0đ");//phuc vu hien thi phi
     private JLabel loaiXeHienThi = new JLabel("--");
     private JLabel gioVaoHienThi = new JLabel("--");
+    private JLabel daGuiHienThi = new JLabel("--");
+
+    // Ghi nhớ vị trí đang xem
+    private ParkingSlot viTriHienTai;
 
 
     public SlotDetailPanel() {
@@ -66,12 +72,15 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
 
         //Bảng loại xe và giờ vào
         JPanel bangThongTin = new JPanel(
-                new GridLayout(2, 2, 10, 12)
+                new GridLayout(3, 2, 10, 12)
         );
         bangThongTin.setOpaque(false);
 
         JLabel nhanLoaiXe = new JLabel("Loại xe");
         JLabel nhanGioVao = new JLabel("Giờ vào");
+        JLabel nhanDaGui = new JLabel("Đã gửi");
+        nhanDaGui.setForeground(new Color(152, 162, 168));
+        daGuiHienThi.setForeground(Color.WHITE);
 
         Color mauChuPhu = new Color(152, 162, 168);
         nhanLoaiXe.setForeground(mauChuPhu);
@@ -81,6 +90,8 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
         bangThongTin.add(loaiXeHienThi);
         bangThongTin.add(nhanGioVao);
         bangThongTin.add(gioVaoHienThi);
+        bangThongTin.add(nhanDaGui);
+        bangThongTin.add(daGuiHienThi);
 
         JPanel khuThongTin = new JPanel(new BorderLayout(0, 10));
         khuThongTin.setOpaque(false);
@@ -117,12 +128,19 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
 
         add(hangTieuDe, BorderLayout.NORTH);
         add(noiDungPhieu, BorderLayout.CENTER);
+
+        Timer timerGui = new Timer(1000, e -> {//tính tgian gửi
+            capNhatThoiGianGui();
+        });
+        timerGui.start();
     }
 
     //Cập nhật toàn bộ phiếu theo vị trí được chọn
     public void capNhat(ParkingSlot viTri) {
+        viTriHienTai = viTri;
         if (viTri == null) {
             maViTri.setText("--");
+            daGuiHienThi.setText("--");
             trangThai.setText("CHƯA CHỌN");
             trangThai.setForeground(new Color(177, 161, 161));
             return;
@@ -130,6 +148,7 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
         maViTri.setText(viTri.getId());
         if (viTri.isEmpty()) {
             trangThai.setText("TRỐNG");
+            daGuiHienThi.setText("--");
             trangThai.setForeground(new Color(31, 230, 71));
             thongTinViTri.setText("Sẵn sàng nhận xe.");
 
@@ -156,6 +175,7 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
                             "HH:mm:ss dd/MM/yyyy"
                     ));
             gioVaoHienThi.setText(gioVao);
+            capNhatThoiGianGui();
 
             String tien = String.format(
                     Locale.US, "%,d", viTri.getPhiGui()
@@ -168,4 +188,28 @@ public class SlotDetailPanel extends JPanel {//Định nghĩa từ Jpanel
         revalidate();
         repaint();
     }
+
+    private void capNhatThoiGianGui() {//tính thời gian gửi của xe để hiển thị
+        if (viTriHienTai == null || viTriHienTai.isEmpty()) {
+            daGuiHienThi.setText("--");
+            return;
+        }
+        Duration thoiGian = Duration.between(
+                viTriHienTai.getThoiGianVao(),
+                LocalDateTime.now()
+        );
+
+        long tongPhut = Math.max(0, thoiGian.toMinutes());
+        long gio = tongPhut / 60;
+        long phut = tongPhut % 60;
+
+        if (gio == 0) {
+            daGuiHienThi.setText(phut + " phút");
+        } else {
+            daGuiHienThi.setText(
+                    gio + " giờ " + phut + " phút"
+            );
+        }
+    }
+
 }
